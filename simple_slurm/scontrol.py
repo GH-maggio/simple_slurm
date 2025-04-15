@@ -20,7 +20,7 @@ class SlurmScontrolWrapper:
     def show_job(self, job_id: int) -> dict[str, str]:
         """Refresh the information from the current queue for the current user"""
         result = subprocess.run(
-            [self.command, "-o", self.output_format, f"{job_id}"],
+            [self.command, "show", "job", "-o", f"{job_id}"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
