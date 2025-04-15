@@ -31,6 +31,7 @@ class SlurmScontrolWrapper:
 
         serialized_result = self._parse_output(result.stdout)
         self.jobs[serialized_result["JobId"]] = serialized_result
+        return serialized_result
 
     def _is_valid_csv_format(self, format_str: str):
         """validates that the output is a valid csv"""
@@ -43,12 +44,16 @@ class SlurmScontrolWrapper:
         except csv.Error:
             return False
 
-    def _parse_output(self, output: str):
+    def _parse_output(self, stdout: str):
         """converts the stdout into a python dictionary
-        each key is a jobid as integer
+        appends split values missing '=' to the previous element
         """
-        csv_file = StringIO(output.strip())
-        reader = csv.DictReader(
-            csv_file, delimiter=",", quotechar='"', skipinitialspace=True
-        )
-        return [row for row in reader]
+
+        pairs: list[str] = []
+        for e in stdout.split():
+            if "=" in e:
+                pairs.append(e)
+            else:
+                pairs[-1] += f"_{e}"
+
+        return {k: v for k, v in (pair.split("=", 1) for pair in pairs)}
