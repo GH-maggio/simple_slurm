@@ -11,11 +11,6 @@ from simple_slurm.scontrol import SlurmScontrolWrapper
 
 IGNORE_BOOLEAN = "IGNORE_BOOLEAN"
 
-class SoS(Slurm):
-
-    def __init__(self) -> None:
-    super().__init__()
-    self.scontrol = SlurmScontrolWrapper
 
 class Slurm:
     """Simple Slurm class for running sbatch commands.
@@ -361,9 +356,8 @@ def format_timedelta(value: datetime.timedelta, time_format: str):
         }
     )
 
-class SoS(Slurm):
 
+class SoS(Slurm):
     def __init__(self) -> None:
         super().__init__()
         self.scontrol = SlurmScontrolWrapper()
-
